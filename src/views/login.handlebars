@@ -1,0 +1,22 @@
+<div>
+    <h1>Login</h1>
+    <form action="/api/v1/session/login" method="POST"> 
+    {{#if error}}
+        <p>{{error}}</p>
+    {{/if}}
+        <div>
+            <label for="email">Email</label><br>
+            <input type="email" name="email" id="email" placeholder="Enter email" required><br><br>
+        </div>
+        <div>
+            <label for="password">Password</label><br>
+            <input type="password" name="password" id="password" placeholder="Enter password" required><br><br>
+        </div>
+        <button type="submit">Login</button><br><br>
+        <button><a href="/register">Register</a></button>
+        <button><a href="/recover">Recover Password</a></button>
+        <button><a href="/api/v1/session/github/callback">Login whit GitHub</a></button>
+    </form>
+</div>
+
+

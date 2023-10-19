@@ -1,0 +1,45 @@
+<h1>Premium update</h1>
+<br>
+    <button><a href="/home">Home</a></button>
+<br>
+<br>
+    <button type="button"><a href="/profile">Profile</a></button>
+<br>
+<h2>Upload the following documents to be able to be premium</h2>
+<br>
+<br>
+<form action="/api/v1/session/{{user.user}}/documents" method="post" enctype="multipart/form-data">
+    <label for="idUserDoc">ID:</label>
+    <input type="file" id="idUserDoc" name="file" required>
+    <br>
+    <br>
+    <label for="DomicileUserDoc">Domicile:</label>
+    <input type="file" id="DomicileUserDoc" name="file" required>
+    <br>
+    <br>
+    <label for="accountStateUserDoc">Account State:</label>
+    <input type="file" id="accountStateUserDoc" name="file" required>
+    <br>
+    <br>
+    <button type="submit" id="uploadBtn">Upload Documents</button>      
+</form>
+<br>
+{{#if error}}
+    <h3>{{error}}</h3>
+{{/if}}
+{{#if docUploaded}}
+    <h3>Documents uploaded successfully</h3>
+{{/if}}
+<br>
+<br>
+<form action="/api/v1/session/premium/{{user}}" method="get">
+    <br />
+    {{#if docUploaded}}
+        <button type="submit">Update to premium</button>
+    {{/if}}
+    {{#unless docUploaded}}
+        <button type="submit" disabled>Update to premium</button>
+    {{/unless}}
+</form>
+
+    

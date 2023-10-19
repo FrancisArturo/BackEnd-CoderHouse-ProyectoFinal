@@ -1,0 +1,17 @@
+<div>
+    <h1>Recover Password</h1>
+    <button><a href="/login">Login</a></button>
+    <br>
+    <br>
+    <br>
+    <h2>Enter your email</h2>
+    {{#if error}}
+        <p>{{error}}</p>
+    {{/if}}
+    <input type="text" name="email" id="EmailRecover" placeholder="Email" required>
+    <br>
+    <br>
+    <button type="button" id="recoverSendButton">Send</button>
+</div>
+
+<script src="/js/recover.js"></script>

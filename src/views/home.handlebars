@@ -1,0 +1,91 @@
+<div>
+    <h1>Home</h1>
+    <h2>Welcome {{user.user.role}}: {{user.user.firstName}} {{user.user.lastName}}</h2>
+    <form action="/api/v1/session/logout" method="get">
+        <br />
+        <button type="submit">logout</button>
+    </form>
+    {{#unless adminRole}}
+        <br>
+        <button type="button"><a href="/cart/{{cartId}}">Cart</a></button>
+        <br>
+        <br>
+        <button type="button"><a href="/profile">Profile</a></button>
+        <br>
+    {{/unless}}
+    {{#unless userRole}}
+        <br>
+        <button><a href="/addproduct">Add a product</a></button>
+        <br>
+        <br>
+    {{/unless}}
+    {{#if adminRole}}
+        <button><a href="/updateproduct">Update a product</a></button>
+        <br>
+    {{/if}} 
+    <h2>Products List</h2>
+    {{#if premiumRole}}
+        {{#each products}}
+            <div>
+                <h3>{{this.title}}</h3>
+                <p>description: {{this.description}}</p>
+                <p>price: {{this.price}}</p>
+                <p>category: {{this.category}}</p>
+                <p>stock: {{this.stock}}</p>
+                <p>owner: {{this.owner}}</p>
+                <p id="idProduct">id: {{this.id}}</p> 
+                <label for="quantity">Quantity</label>
+                <input type="number" name="quantity" id="{{this.id}}" value="1">             
+                <button type="button" onclick="addCartProduct('{{this.id}}')" class="botonAgregarCarrito">Agregar al carrito</button>
+                <br>
+                <br>
+                <button type="button" onclick="deleteProduct('{{this.id}}')">Delete</button>
+            </div>
+        {{/each }}
+    {{/if}}
+    {{#if adminRole}}
+        {{#each products}}
+            <div>
+                <h3>{{this.title}}</h3>
+                <p>description: {{this.description}}</p>
+                <p>price: {{this.price}}</p>
+                <p>category: {{this.category}}</p>
+                <p>stock: {{this.stock}}</p>
+                <p>owner: {{this.owner}}</p> 
+                <p id="idProduct">id: {{this.id}}</p>     
+                <button type="button" onclick="deleteProduct('{{this.id}}')">Delete</button>
+            </div>
+        {{/each }}  
+    {{/if}}
+    {{#if userRole}}
+        {{#each products}}
+            <div>
+                <h3>{{this.title}}</h3>
+                <p>description: {{this.description}}</p>
+                <p>price: {{this.price}}</p>
+                <p>category: {{this.category}}</p>
+                <p>stock: {{this.stock}}</p>
+                <p>owner: {{this.owner}}</p>
+                <p>id: {{this.id}}</p> 
+                <label for="quantity">Quantity</label>
+                <input type="number" name="quantity" id="{{this.id}}" value="1">             
+                <button type="button" onclick="addCartProduct('{{this.id}}')" class="botonAgregarCarrito">Agregar al carrito</button>
+            </div>
+        {{/each }}
+    {{/if}}
+</div>
+
+<div>
+<br>
+<br>
+    <p>Pagina Actual: {{page}} </p>
+</div>
+{{#if hasPrevPage}}
+    <a href="/home?category={{category}}&page={{prevPage}}&limit={{limit}}&sort={{sort}}">Previous</a>
+{{/if}}
+{{#if hasNextPage}}
+    <a href="/home?category={{category}}&page={{nextPage}}&limit={{limit}}&sort={{sort}}">Next</a>
+{{/if}}
+
+<script src="/js/index.js"></script>
+<script src="/js/deleteproduct.js"></script>

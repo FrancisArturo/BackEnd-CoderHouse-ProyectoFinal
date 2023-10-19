@@ -1,0 +1,32 @@
+<div>
+    {{#if userRole}}
+        <h1>User Profile</h1>
+    {{/if}}
+    {{#if premiumRole}}
+        <h1>Premium Profile</h1>
+    {{/if}}
+    <br>
+    <button><a href="/home">Home</a></button>
+    <br>
+    <h3>First Name: {{user.firstName}}</h3>
+    <h3>Last Name: {{user.lastName}}</h3>
+    <h3>Email: {{user.email}}</h3>
+    <br>
+    <br>
+    {{#if userRole}}
+        <br>
+        <button type="button"><a href="/premium">update to premium</a></button>
+        <br>
+    {{/if}}
+    {{#if premiumRole}}
+        <br>
+        <button type="button"><a href="/api/v1/session/premium/{{user.user}}">update to user</a></button>
+        <br>
+    {{/if}}
+    <div>
+        <form action="/api/v1/session/logout" method="get">
+        <br>
+        <button type="submit">logout</button>
+        </form>
+    </div>
+</div>
