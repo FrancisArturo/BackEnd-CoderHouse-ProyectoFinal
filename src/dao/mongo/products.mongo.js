@@ -48,7 +48,8 @@ export default class ProductsDao {
     }
     getProductByTitleDao = async (product) => {
         try {
-            const checkProduct = await productsModel.findOne({ title: product.title });
+            const titleToSearch = product.title.toLowerCase();
+            const checkProduct = await productsModel.findOne({ title: titleToSearch });
             return checkProduct;
         } catch (error) {
             throw new Error(error); 

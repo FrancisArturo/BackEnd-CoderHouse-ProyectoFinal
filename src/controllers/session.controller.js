@@ -68,11 +68,27 @@ export default class SessionController {
             const newUser = await this.usersService.createUser(req.body);
             const cartUser = await this.cartsService.addCart();
             const cartUserId = cartUser._id;
-            await this.usersService.updateUser(newUser._id, {carts : cartUserId });
+            await this.usersService.updateUserById(newUser._id, {carts : cartUserId });
             const newUserUpdated = await this.usersService.getUserById(newUser._id);
             return res.json({message: "Successfully registered user", newUserUpdated});
         } catch (error) {
             return res.status(400).json({ message: error.message });
+        }
+    }
+    getUserController = async (req, res) =>{
+        try {
+            const usersReturn = [];
+            const users = await this.usersService.getUsers();
+            if (!users) {
+                return res.status(404).json({error: "No users found"});
+            }
+            users.forEach(element => {
+                const user = new UserDTO(element);
+                usersReturn.push(user);
+            });
+            return res.status(200).render("users", { users: usersReturn });
+        } catch (error) {
+            return res.status(400).json({error: error});
         }
     }
 
@@ -107,6 +123,7 @@ export default class SessionController {
                 role: userExist.role,
             };
             const token = generateJWT({...signUser});
+            await this.usersService.updateUserById(signUser.user, { lastConnection: Date.now() });
             res.cookie("cookieToken", token, {
                 maxAge:60*60*1000,
                 httpOnly: true
@@ -115,8 +132,10 @@ export default class SessionController {
             return res.status(400).json({ message: error.message});
         }
     }
-    logoutUserController = (req, res) => {
+    logoutUserController = async (req, res) => {
         try {
+            const { user } = req.user;
+            await this.usersService.updateUserById(user.user, { lastConnection: Date.now() });
             res.clearCookie("cookieToken");
             return res.redirect('/login');
         } catch (error) {
@@ -200,7 +219,7 @@ export default class SessionController {
                 return res.json({ message: "user not found" });
             }
             if (user.role == "user") {
-                const updateUser = await this.usersService.updateUser(uid, { role: "premium" });
+                const updateUser = await this.usersService.updateUserById(uid, { role: "premium" });
                 res.clearCookie("cookieToken");
                 const userUpdated = await this.usersService.getUserById(uid);
                 const signUser = {
@@ -216,7 +235,7 @@ export default class SessionController {
                         httpOnly: true
                     }).redirect('/home');
             } else if (user.role == "premium") {
-                const updateUser = await this.usersService.updateUser(uid, { role: "user" });
+                const updateUser = await this.usersService.updateUserById(uid, { role: "user" });
                 res.clearCookie("cookieToken");
                 const userUpdated = await this.usersService.getUserById(uid);
                 const signUser = {
@@ -238,10 +257,41 @@ export default class SessionController {
             res.status(400).json({ message: error.message }); 
         }
     }
+    updateAdminRoleControler = async (req, res) => {
+        try {
+            const { uid } = req.params;
+            const user = await this.usersService.getUserById(uid);
+            if (!user) {
+                return res.json({ message: "user not found" });
+            }
+            if (user.role == "user") {
+                await this.usersService.updateUserById(uid, { role: "premium" });
+            } else if (user.role == "premium") {
+                await this.usersService.updateUserById(uid, { role: "user" });
+            }
+            return res.status(200).json({message: "Role change successfully"});
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
     currentController = async (req, res) => {
-        const user = req.user.user;
-        const currentUser = new UserDTO(user);
-        return res.json({message: "Current access information", currentUser});
+        const { user }  = req.user
+        if (user.role == "admin") {
+            const current = {
+                _id: "",
+                firstName: "admin",
+                lastName: "coder",
+                email: "",
+                role: "admin"
+            }
+            const currentUser = new UserDTO(current);
+            return res.json({message: "Current access information", currentUser});
+        } else {
+            const userFound = await this.usersService.getUserById(user.user);
+            const currentUser = new UserDTO(userFound);
+            return res.json({message: "Current access information", currentUser});
+        }
+        
     }
     deleteUserByIdController = async (req, res) => {
         try {
@@ -250,6 +300,7 @@ export default class SessionController {
             if (!user) {
                 return res.json({ message: "user not found" });
             }
+            await this.cartsService.deleteCartById(user.carts);
             const deleteUser = await this.usersService.deleteUserById(uid);
             return res.json({message: "User delete successfully", deleteUser});
         } catch (error) {

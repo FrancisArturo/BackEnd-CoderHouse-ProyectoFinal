@@ -14,7 +14,10 @@ const addCartProduct = async (pid) => {
     if (userData.email != productOwner) {
         const cartId = userData.carts;
         const quantityProductSelect = document.getElementById(pid).value;
-            
+        const checkQuantity = Number.parseInt(quantityProductSelect);
+        if (checkQuantity < 1 || !Number.isInteger(checkQuantity)) {
+            return alert("quantity selected inappropriate");
+        }
         const quantityProduct = {
             quantity: quantityProductSelect
         }

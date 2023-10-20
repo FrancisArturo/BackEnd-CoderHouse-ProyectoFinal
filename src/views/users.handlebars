@@ -1,0 +1,27 @@
+<h1>Users list</h1>
+<form action="/api/v1/session/logout" method="get">
+    <br>
+    <button type="submit">logout</button>
+</form>
+<br>
+<button><a href="/home">Home</a></button>
+<br>
+<br>
+{{#each users}}
+    <div>
+        <h3>First Name: {{this.firstname}}</h3>
+        <h3>Last Name: {{this.lastname}}</h3>
+        <h3>Email: {{this.email}}</h3>
+        <h3>Role: {{this.role}}</h3>
+        <h3>Id: {{this.user}}</h3>
+        <button type="button" id="btnRole" onclick="userChangeRole('{{this.user}}')">Change Role</button>
+        <br>
+        <br>
+        <button type="button" id="btnDeleteUser" onclick="userDelete('{{this.user}}')">Delete User</button>
+    </div>
+    <br>
+    <br>
+{{/each }}
+
+<script src="/js/userchangerole.js"></script>
+<script src="/js/deleteuser.js"></script>

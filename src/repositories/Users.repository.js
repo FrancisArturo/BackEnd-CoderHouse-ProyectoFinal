@@ -4,6 +4,10 @@ export default class UsersRepository {
     constructor(dao) {
         this.dao = dao;
     }
+    getUsers = async () => {
+        let result = await this.dao.getUsersDao();
+        return result;
+    }
     getUserByEmail = async (user) => {
         let result = await this.dao.getUserByEmailDao(user);
         return result;
@@ -32,8 +36,12 @@ export default class UsersRepository {
         let result = await this.dao.addDocumentUserDao(uid, doc);
         return result;
     }
-    updateUser = async (uid, userUpdate) => {
-        let result = await this.dao.updateUserDao(uid, userUpdate);
+    updateUserById = async (uid, userUpdate) => {
+        let result = await this.dao.updateUserByIdDao(uid, userUpdate);
+        return result;
+    }
+    updateUserByEmail = async (userEmail, userUpdate) => {
+        let result = await this.dao.updateUserByEmailDao(userEmail, userUpdate);
         return result;
     }
     getUserById = async (uid) => {

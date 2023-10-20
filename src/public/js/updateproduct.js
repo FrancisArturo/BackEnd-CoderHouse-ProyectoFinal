@@ -40,6 +40,12 @@ updateBtn.addEventListener("click", async (e) => {
     const productUpdateArray = [];
     let productValuesCheck;
     const pid = updateIdproduct.value;
+    if(!pid) {
+        return alert("You must enter the product id")
+    }
+    if(!updateProductTitle.value && !updateProductDescription.value && !updateProductCode.value && !updateProductPrice.value && !updateProductStatus.value && !updateProductStock.value && !updateProductCategory.value && !updateProductThumbnail.value){
+        return alert("You must enter at least one field to update")
+    }
     const product = {
         title: updateProductTitle.value,
         description: updateProductDescription.value,
@@ -58,6 +64,7 @@ updateBtn.addEventListener("click", async (e) => {
     });
     const productUpdate = Object.fromEntries(productUpdateArray);
     const data = await updateProduct(pid, productUpdate);
+    console.log(data)
     if (data.message == "Product updated successfully") {
         alert("Product updated successfully");
     } else if (data.message == "No product found") {

@@ -1,4 +1,6 @@
+import { EMAIL } from '../config/config.js';
 import { ProductsService } from '../repositories/index.js';
+import { transporter } from '../utils/transporter.js';
 
 
 export default class ProductsController {
@@ -67,7 +69,7 @@ export default class ProductsController {
         try {
             const { pid } = req.params;
             const productFind = await this.productsService.getProductById(pid);
-            if (productFind === "No product found") {
+            if (!productFind) {
                 return res.json({
                     message: "No product found",
                 })
@@ -92,6 +94,22 @@ export default class ProductsController {
                 })
             };
             const productDelete = await this.productsService.deleteProduct(pid);
+            if (productFind.owner != "admin") {
+                transporter.sendMail({
+                    from: EMAIL,
+                    to: productFind.owner,
+                    subject: `Ecommerce product removed`,
+                    html: `
+                    <div>
+                        <h4>We inform you that your following product was eliminated from ecommerce</h4>
+                        <div>
+                            <p>Title: ${productFind.title}</p>
+                            <p>Price: ${productFind.price}</p>
+                        </div>
+                    </div>
+                    `,
+                });
+            }
             return res.json({
                 message: "Product deleted successfully",
                 data: productDelete

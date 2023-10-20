@@ -1,3 +1,4 @@
+import UserDTO from '../dao/DTOs/user.dto.js';
 import { CartsService, ProductsService, UsersService } from '../repositories/index.js';
 
 export default class ViewsController {
@@ -31,6 +32,18 @@ export default class ViewsController {
     }
     registerViewController = async (req, res) => {
         res.render("register");
+    }
+    usersViewController = async (req, res) => {
+        const usersReturn = [];
+            const users = await this.usersService.getUsers();
+            if (!users) {
+                return res.status(404).json({error: "No users found"});
+            }
+            users.forEach(element => {
+                const user = new UserDTO(element);
+                usersReturn.push(user);
+            });
+        res.render("users", {users: usersReturn});
     }
     recoverViewController = async ( req, res) => {
         res.render("recover");

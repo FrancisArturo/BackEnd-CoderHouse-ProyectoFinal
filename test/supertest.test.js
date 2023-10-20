@@ -100,7 +100,7 @@ describe("functional test for all endpoints", () => {
         });
         after( async () => {
             await requester.delete(`${CARTS_ROUTE}/${cartIdMock}`);
-            await requester.delete(`${SESSION_ROUTE}/user/${userIdMock}`);
+            await requester.delete(`${SESSION_ROUTE}/users/${userIdMock}`);
         })
         it("should POST /api/v1/carts/:cid/products/:pid add a product to user cart successfully with code 200", async () => {
             const { _body } = await requester.get(`${SESSION_ROUTE}/user`).set("Cookie", [`${cookie.name}=${cookie.value}`]);

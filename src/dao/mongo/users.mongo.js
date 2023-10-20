@@ -3,7 +3,15 @@ import { hashPassword, comparePassword } from "../../utils/encrypt.js";
 
 
 export default class UsersDao {
-    
+
+    getUsersDao = async () => {
+        try {
+            const UsersFound = await userModel.find();
+            return UsersFound;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
     getUserByEmailDao = async (user) => {
         try {
             const userFound = await userModel.findOne({ email: user.email });
@@ -61,9 +69,17 @@ export default class UsersDao {
             throw new Error("password recovery error");
         }
     }
-    updateUserDao = async (uid, userUpdate) => {
+    updateUserByIdDao = async (uid, userUpdate) => {
         try {
             const updateUser = await userModel.updateOne({ _id: uid }, userUpdate);
+            return updateUser;
+        } catch (error) {
+            throw new Error("Update user error");
+        }
+    }
+    updateUserByEmailDao = async (userEmail, userUpdate) => {
+        try {
+            const updateUser = await userModel.updateOne({ email: userEmail }, userUpdate);
             return updateUser;
         } catch (error) {
             throw new Error("Update user error");

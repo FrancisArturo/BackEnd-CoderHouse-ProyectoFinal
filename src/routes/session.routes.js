@@ -19,16 +19,18 @@ export default class sessionRoutes {
     initializeRoutes() {
         this.router.post(`${this.path}/register`, this.sessionController.createUserController);
         this.router.post(`${this.path}/login`, this.sessionController.loginUserController);
-        this.router.get(`${this.path}/logout`, this.sessionController.logoutUserController);
+        this.router.get(`${this.path}/logout`, handlePolicies(["admin", "user", "premium"]), this.sessionController.logoutUserController);
         this.router.post(`${this.path}/recover`, this.sessionController.recoverPasswordController);
         this.router.get(`${this.path}/premium/:uid`, this.sessionController.updateUserRoleController);
+        this.router.get(`${this.path}/users/:uid/role`, handlePolicies(["admin"]), this.sessionController.updateAdminRoleControler);
         this.router.post(`${this.path}/:uid/documents`, uploader.array('file'), this.sessionController.uploadDocumentController);
         this.router.post(`${this.path}/recover/complete`, handlePolicies(["pswRecover"]), this.sessionController.recoverCompletePswController);
         this.router.get(`${this.path}/user`, handlePolicies(["admin", "user", "premium"]), this.sessionController.getUserByIdController);
+        this.router.get(`${this.path}/users`, handlePolicies(["admin"]), this.sessionController.getUserController);
         this.router.get(`${this.path}/github`, passport.authenticate("github", { scope: [ 'user:email' ], session: false}));
         this.router.get(`${this.path}/github/callback`, passport.authenticate("github", { failureRedirect: "/api/v1/session/failedlogin", session: false }), this.sessionController.githubLoginController);
         this.router.get(`${this.path}/current`,  handlePolicies(["admin", "user", "premium"]), this.sessionController.currentController);
-        this.router.delete(`${this.path}/user/:uid`, this.sessionController.deleteUserByIdController);
+        this.router.delete(`${this.path}/users/:uid`, this.sessionController.deleteUserByIdController);
     }
 }
 

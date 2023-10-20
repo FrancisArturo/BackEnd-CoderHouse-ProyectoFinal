@@ -2,7 +2,7 @@
     <h1>Home</h1>
     <h2>Welcome {{user.user.role}}: {{user.user.firstName}} {{user.user.lastName}}</h2>
     <form action="/api/v1/session/logout" method="get">
-        <br />
+        <br>
         <button type="submit">logout</button>
     </form>
     {{#unless adminRole}}
@@ -22,6 +22,9 @@
     {{#if adminRole}}
         <button><a href="/updateproduct">Update a product</a></button>
         <br>
+        <br>
+        <button><a href="/api/v1/session/users">Users</a></button>
+        <br>
     {{/if}} 
     <h2>Products List</h2>
     {{#if premiumRole}}
@@ -35,7 +38,7 @@
                 <p>owner: {{this.owner}}</p>
                 <p id="idProduct">id: {{this.id}}</p> 
                 <label for="quantity">Quantity</label>
-                <input type="number" name="quantity" id="{{this.id}}" value="1">             
+                <input type="number" name="quantity" id="{{this.id}}" min="1">             
                 <button type="button" onclick="addCartProduct('{{this.id}}')" class="botonAgregarCarrito">Agregar al carrito</button>
                 <br>
                 <br>

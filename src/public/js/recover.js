@@ -22,6 +22,7 @@ recoverBtn.addEventListener("click", async(e) => {
     const data = await recoverPassword(user);
     if (data.message == "an email was sent") {
         alert("An email was sent, check it to continue with the process");
+        return window.location.replace("/login");
     } else {
         alert("User not found")
     }

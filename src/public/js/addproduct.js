@@ -24,6 +24,9 @@ async function addProduct(product) {
 
 addBtn.addEventListener("click", async (e) => {
     e.preventDefault();
+    if (!addProductTitle.value || !addProductDescription.value || !addProductCode.value || !addProductPrice.value || !addProductStatus.value || !addProductStock.value || !addProductCategory.value) {
+        return alert("You must enter all fields that are not optional");
+    }
     let product = {
         title: addProductTitle.value,
         description: addProductDescription.value,
@@ -44,18 +47,18 @@ addBtn.addEventListener("click", async (e) => {
     }
     const data = await addProduct(product);
     if (data.message === "Product added successfully") {
-        alert("Product added successfully");
+        addProductTitle.value = "";
+        addProductPrice.value = "";
+        addProductDescription.value = "";
+        addProductStock.value = "";
+        addProductCategory.value = "";
+        addProductStatus.value = "";
+        addProductCode.value = "";
+        addProductThumbnail.value = ""
+        return alert("Product added successfully");
     } else if (data.message === "Product already exists") {
-        alert("Product already exists");
+        return alert("Product already exists");
     } else {
-        alert("Add product Error");
+        return alert("Add product Error");
     }
-    addProductTitle.value = "";
-    addProductPrice.value = "";
-    addProductDescription.value = "";
-    addProductStock.value = "";
-    addProductCategory.value = "";
-    addProductStatus.value = "";
-    addProductCode.value = "";
-    addProductThumbnail.value = "";
 });
