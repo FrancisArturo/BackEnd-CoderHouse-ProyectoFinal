@@ -8,6 +8,13 @@
     <br>
     <button><a href="/home">Home</a></button>
     <br>
+    <div>
+        <form action="/api/v1/session/logout" method="get">
+        <br>
+        <button type="submit">logout</button>
+        </form>
+    </div>
+    <br>
     <h3>First Name: {{user.firstName}}</h3>
     <h3>Last Name: {{user.lastName}}</h3>
     <h3>Email: {{user.email}}</h3>
@@ -23,10 +30,4 @@
         <button type="button"><a href="/api/v1/session/premium/{{user.user}}">update to user</a></button>
         <br>
     {{/if}}
-    <div>
-        <form action="/api/v1/session/logout" method="get">
-        <br>
-        <button type="submit">logout</button>
-        </form>
-    </div>
 </div>

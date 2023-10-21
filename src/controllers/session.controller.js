@@ -49,11 +49,11 @@ export default class SessionController {
                 }
             }
             const user = await this.usersService.getUserById(uid);
-            if (user.documents.lenght < 2) {
+            if (user.documents.lenght < 3) {
                 return res.render("premium", {error: "upload documents error, please try again"});
             } else {
                 docUploaded = true;
-                return res.render("premium", {docUploaded});
+                return res.render("premium", {user: user._id, docUploaded});
             }
         } catch (error) {
             return error
@@ -312,7 +312,6 @@ export default class SessionController {
             let InactiveUserExist = false;
             const users = await this.usersService.getUsers();
             for (let element of users) {
-                console.log(Date.now() - element.lastConnection);
                 const compareDateConnection = Date.now() - element.lastConnection;
                 if (compareDateConnection > 1.8e+6) {
                     await this.usersService.deleteUserById(element._id);
