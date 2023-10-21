@@ -18,11 +18,11 @@ const deleteProduct = async (pid) => {
         });
         const data = await productDelete.json();
         if (data.message == "No product found") {
-            alert("No product found"); 
+            return alert("No product found"); 
         } else {
             alert("Product deleted successfully");
+            return window.location.replace("/home");
         };
-        window.location.replace("/home");
     } else {
         return alert ("Unauthorized to delete this product");
     }

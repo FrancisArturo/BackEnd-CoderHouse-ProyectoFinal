@@ -1,12 +1,17 @@
 <h1>Users list</h1>
 <form action="/api/v1/session/logout" method="get">
     <br>
-    <button type="submit">logout</button>
+    <button type="submit">Logout</button>
 </form>
 <br>
 <button><a href="/home">Home</a></button>
 <br>
 <br>
+{{#if users}}
+    <button type="button" id="deleteInactiveBtn">Delete Inactive Users (30min)</button>
+    <br>
+    <br>
+{{/if}}
 {{#each users}}
     <div>
         <h3>First Name: {{this.firstname}}</h3>
@@ -25,3 +30,4 @@
 
 <script src="/js/userchangerole.js"></script>
 <script src="/js/deleteuser.js"></script>
+<script src="/js/deleteinactive.js"></script>

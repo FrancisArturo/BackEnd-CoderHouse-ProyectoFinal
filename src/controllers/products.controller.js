@@ -101,7 +101,7 @@ export default class ProductsController {
                     subject: `Ecommerce product removed`,
                     html: `
                     <div>
-                        <h4>We inform you that your following product was eliminated from ecommerce</h4>
+                        <h4>Hello! we inform you that your following product was eliminated from ecommerce</h4>
                         <div>
                             <p>Title: ${productFind.title}</p>
                             <p>Price: ${productFind.price}</p>

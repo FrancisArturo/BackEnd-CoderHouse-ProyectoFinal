@@ -75,7 +75,7 @@ export default class SessionController {
             return res.status(400).json({ message: error.message });
         }
     }
-    getUserController = async (req, res) =>{
+    getUsersController = async (req, res) =>{
         try {
             const usersReturn = [];
             const users = await this.usersService.getUsers();
@@ -163,7 +163,7 @@ export default class SessionController {
                 role: "pswRecover"
             };
             const token = generateJWT({...signUser});
-            const sendEmail = transporter.sendMail({
+            transporter.sendMail({
                 from: EMAIL,
                 to: userExist.email,
                 subject: `Recover your password`,
@@ -219,7 +219,7 @@ export default class SessionController {
                 return res.json({ message: "user not found" });
             }
             if (user.role == "user") {
-                const updateUser = await this.usersService.updateUserById(uid, { role: "premium" });
+                await this.usersService.updateUserById(uid, { role: "premium" });
                 res.clearCookie("cookieToken");
                 const userUpdated = await this.usersService.getUserById(uid);
                 const signUser = {
@@ -235,7 +235,7 @@ export default class SessionController {
                         httpOnly: true
                     }).redirect('/home');
             } else if (user.role == "premium") {
-                const updateUser = await this.usersService.updateUserById(uid, { role: "user" });
+                await this.usersService.updateUserById(uid, { role: "user" });
                 res.clearCookie("cookieToken");
                 const userUpdated = await this.usersService.getUserById(uid);
                 const signUser = {
@@ -257,7 +257,7 @@ export default class SessionController {
             res.status(400).json({ message: error.message }); 
         }
     }
-    updateAdminRoleControler = async (req, res) => {
+    updateAdminRoleController = async (req, res) => {
         try {
             const { uid } = req.params;
             const user = await this.usersService.getUserById(uid);
@@ -303,6 +303,38 @@ export default class SessionController {
             await this.cartsService.deleteCartById(user.carts);
             const deleteUser = await this.usersService.deleteUserById(uid);
             return res.json({message: "User delete successfully", deleteUser});
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+    deleteUsersInactiveController = async (req, res) => {
+        try {
+            let InactiveUserExist = false;
+            const users = await this.usersService.getUsers();
+            for (let element of users) {
+                console.log(Date.now() - element.lastConnection);
+                const compareDateConnection = Date.now() - element.lastConnection;
+                if (compareDateConnection > 1.8e+6) {
+                    await this.usersService.deleteUserById(element._id);
+                    await this.cartsService.deleteCartById(element.carts);
+                    InactiveUserExist = true;
+                    transporter.sendMail({
+                        from: EMAIL,
+                        to: element.email,
+                        subject: `Ecommerce user eliminated`,
+                        html: `
+                        <div>
+                            <h4>Hello ${element.firstName}, We inform you that your user was deleted due to inactivity. Sorry for the inconvenience caused.</h4>
+                        </div>
+                        `,
+                    });
+                }
+            }
+            if (InactiveUserExist) {
+                return res.status(200).json({message: "Inactive users deleted"});
+            } else {
+                return res.status(200).json({message: "No inactive users"});
+            }
         } catch (error) {
             res.status(400).json({ message: error.message });
         }

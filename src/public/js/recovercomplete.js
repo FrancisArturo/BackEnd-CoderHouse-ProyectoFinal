@@ -18,7 +18,7 @@ async function recoverCompletePassword(psw) {
 recoverBtn.addEventListener("click", async(e) => {
     e.preventDefault();
     if (passwordRecover.value != passwordrepeatRecover.value) {
-        return alert ("Passwords do not match")
+        return alert ("Passwords do not match");
     }
     const psw = {
         password: passwordRecover.value
@@ -27,7 +27,7 @@ recoverBtn.addEventListener("click", async(e) => {
     if (data.message == "the password must be different from the previous one") {
         return alert("the password must be different from the previous one");
     } else {
-        alert("Password update successfully")
+        alert("Password update successfully");
         return window.location.replace("/login");
     }
 });
