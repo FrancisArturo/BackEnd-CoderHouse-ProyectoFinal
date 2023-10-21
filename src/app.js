@@ -10,6 +10,7 @@ import cors from "cors";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
 import { swaggerOpt } from "./config/swagger.config.js";
+import { getLogger, setLogger } from "./utils/logger.js";
 
 
 
@@ -19,10 +20,12 @@ export default class App {
     server;
     env;
     specs;
+    logger;
 
     constructor (routes) {
         this.app = express();
         this.port = PORT;
+        this.logger = getLogger();
         this.env = NODE_ENV || "development";
         this.API_VERSION = API_VERSION || "v1";
         this.persistence = PERSISTENCE;
@@ -39,7 +42,7 @@ export default class App {
     }
     closeServer() {
         this.server = this.app.listen(this.port, () => {
-            console.log(`Server listening on port ${this.port}`);
+            this.logger.info(`Server listening on port ${this.port}`);
             done();
         })
     }
@@ -51,6 +54,7 @@ export default class App {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.static(__dirname + "/public"));
+        this.app.use(setLogger);
         this.app.use(cookieParser());
         initializePassport();
         this.app.use(passport.initialize());
@@ -58,9 +62,9 @@ export default class App {
     listen() {
         this.server = this.app.listen(this.port, () => {
             displayRoutes(this.app);
-            console.log(`Server listening on port ${this.port}`);
-            console.log(`Environment: ${this.env}`);
-            console.log(`Persistence: ${this.persistence}`);
+            this.logger.info(`Server listening on port ${this.port}`);
+            this.logger.info(`Environment: ${this.env}`);
+            this.logger.info(`Persistence: ${this.persistence}`);
             return this.server;
         });
     }

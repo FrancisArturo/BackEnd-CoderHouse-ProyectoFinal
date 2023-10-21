@@ -64,7 +64,6 @@ updateBtn.addEventListener("click", async (e) => {
     });
     const productUpdate = Object.fromEntries(productUpdateArray);
     const data = await updateProduct(pid, productUpdate);
-    console.log(data)
     if (data.message == "Product updated successfully") {
         alert("Product updated successfully");
     } else if (data.message == "No product found") {
