@@ -8,7 +8,7 @@
 <h2>Upload the following documents to be able to be premium</h2>
 <br>
 <br>
-<form action="/api/v1/session/{{user}}/documents" method="post" enctype="multipart/form-data">
+<form action="/api/v1/session/users/{{user}}/documents" method="post" enctype="multipart/form-data">
     <label for="idUserDoc">ID:</label>
     <input type="file" id="idUserDoc" name="file" required>
     <br>
@@ -34,7 +34,7 @@
 {{/if}}
 <br>
 <br>
-<form action="/api/v1/session/premium/{{user}}" method="get">
+<form action="/api/v1/session/users/{{user}}/premium" method="get">
     <br />
     {{#if docUploaded}}
         <button type="submit">Update to premium</button>

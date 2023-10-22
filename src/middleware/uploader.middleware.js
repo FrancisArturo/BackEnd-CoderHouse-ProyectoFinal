@@ -4,7 +4,7 @@ import __dirname from "../dirname.js";
 const storage = multer.diskStorage({
     destination: function(req,file,cb){
         switch (req.route.path) {
-            case "/session/:uid/documents":
+            case "/session/users/:uid/documents":
                 cb(null, __dirname+"/public/uploads/documents");
                 break;
             case "/session/:uid/profile":

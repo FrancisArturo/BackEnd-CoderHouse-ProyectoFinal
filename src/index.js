@@ -7,7 +7,7 @@ import viewsRoutes from "./routes/views.routes.js";
 const app = new App([ new productsRoutes(), new cartRoutes(), new sessionRoutes(), new viewsRoutes()]);
 
 
-//app.listen();
+
 
 
 

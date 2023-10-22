@@ -21,17 +21,19 @@ export default class sessionRoutes {
         this.router.post(`${this.path}/login`, this.sessionController.loginUserController);
         this.router.get(`${this.path}/logout`, handlePolicies(["admin", "user", "premium"]), this.sessionController.logoutUserController);
         this.router.post(`${this.path}/recover`, this.sessionController.recoverPasswordController);
-        this.router.get(`${this.path}/premium/:uid`, this.sessionController.updateUserRoleController);
-        this.router.get(`${this.path}/users/:uid/role`, handlePolicies(["admin"]), this.sessionController.updateAdminRoleController);
-        this.router.post(`${this.path}/:uid/documents`, uploader.array('file'), this.sessionController.uploadDocumentController);
         this.router.post(`${this.path}/recover/complete`, handlePolicies(["pswRecover"]), this.sessionController.recoverCompletePswController);
-        this.router.get(`${this.path}/user`, handlePolicies(["admin", "user", "premium"]), this.sessionController.getUserByIdController);
+        this.router.get(`${this.path}/users/:uid/premium`, this.sessionController.updateUserRoleController);
+        this.router.get(`${this.path}/users/:uid/role`, handlePolicies(["admin"]), this.sessionController.updateAdminRoleController);
+        this.router.post(`${this.path}/users/:uid/documents`, uploader.array('file'), this.sessionController.uploadDocumentController);
+        this.router.delete(`${this.path}/users/:uid`, this.sessionController.deleteUserByIdController);
         this.router.get(`${this.path}/users`, handlePolicies(["admin"]), this.sessionController.getUsersController);
+        this.router.delete(`${this.path}/users`, handlePolicies(["admin"]), this.sessionController.deleteUsersInactiveController);
+        this.router.get(`${this.path}/user`, handlePolicies(["admin", "user", "premium"]), this.sessionController.getUserByIdController);
         this.router.get(`${this.path}/github`, passport.authenticate("github", { scope: [ 'user:email' ], session: false}));
         this.router.get(`${this.path}/github/callback`, passport.authenticate("github", { failureRedirect: "/api/v1/session/failedlogin", session: false }), this.sessionController.githubLoginController);
         this.router.get(`${this.path}/current`,  handlePolicies(["admin", "user", "premium"]), this.sessionController.currentController);
-        this.router.delete(`${this.path}/users/:uid`, this.sessionController.deleteUserByIdController);
-        this.router.delete(`${this.path}/users`, handlePolicies(["admin"]), this.sessionController.deleteUsersInactiveController);
+        
+        
     }
 }
 
