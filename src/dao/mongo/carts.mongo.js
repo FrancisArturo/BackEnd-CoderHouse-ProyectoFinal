@@ -18,7 +18,7 @@ export default class CartsDao {
             const cart = await cartModel.findById(cid).populate("products.product");
             return cart;
         } catch (error) {
-            throw new Error("get products cart error");
+            return error;
         }
 
     }
@@ -30,7 +30,6 @@ export default class CartsDao {
                 await cart.save();
                 const cartupdated = await cartModel.findById(cid).populate("products.product");
                 return cartupdated.products;
-                //return cart;
             }
             if (cart.products.length > 0) {
                 for (let obj in cart.products) {
@@ -39,7 +38,6 @@ export default class CartsDao {
                         await cart.save();
                         const cartupdated = await cartModel.findById(cid).populate("products.product");
                         return cartupdated.products;
-                        //return cart;
                     }
                 }
             }

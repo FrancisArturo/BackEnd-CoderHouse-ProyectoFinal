@@ -1,5 +1,8 @@
 import { EMAIL, PHONE } from "../config/config.js";
 import { CartsService, ProductsService, TicketsService, UsersService } from "../repositories/index.js";
+import EnumsErrors from "../utils/error-enums.js";
+import CustomError from "../utils/error-handler.js";
+import { generateGetProductInfoError, getCartInfoError } from "../utils/error-info.js";
 import { transporter } from "../utils/transporter.js";
 //import { client } from "../utils/twilioClient.js";
 
@@ -19,16 +22,18 @@ export default class CartsController {
         try {
             const { cid } = req.params;
             const cart = await this.cartsService.getCartById(cid);
-            if (!cart) {
-                return res.json({
+            if (cart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(cart),
                     message: "Cart does not exist",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             return res.json({
                 message: "Cart retrieved successfully",
                 data: cart.products,
             });
-            //res.render("cart", { cartProducts, cid });
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -38,16 +43,22 @@ export default class CartsController {
             const { cid, pid } = req.params;
             const quantityProduct = req.body;
             const checkCart = await this.cartsService.getCartById(cid);
-            if (!checkCart) {
-                return res.json({
+            if (checkCart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(checkCart),
                     message: "Cart not found",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             const checkProduct = await this.productsService.getProductById(pid);
-            if (!checkProduct) {
-                return res.json({
+            if (checkProduct.name == "CastError") {
+                CustomError.createError({
+                    name: "get product by id error",
+                    cause: generateGetProductInfoError(checkProduct),
                     message: "Product not found",
-                })
+                    code: EnumsErrors.PRODUCT_MISSING_ERROR
+                });
             };
             const addProduct = await this.cartsService.addProductCart(cid, pid, quantityProduct.quantity);
             return res.json({
@@ -62,16 +73,22 @@ export default class CartsController {
         try {
             const { cid, pid } = req.params;
             const checkCart = await this.cartsService.getCartById(cid);
-            if (!checkCart) {
-                return res.json({
+            if (checkCart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(checkCart),
                     message: "Cart not found",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             const checkProduct = await this.productsService.getProductById(pid);
-            if (!checkProduct) {
-                return res.json({
+            if (checkProduct.name == "CastError") {
+                CustomError.createError({
+                    name: "get product by id error",
+                    cause: generateGetProductInfoError(checkProduct),
                     message: "Product not found",
-                })
+                    code: EnumsErrors.PRODUCT_MISSING_ERROR
+                });
             };
             const cart = await this.cartsService.deleteProductCart(cid, pid);
             return res.json({
@@ -86,11 +103,14 @@ export default class CartsController {
         try {
             const { cid } = req.params;
             const checkCart = await this.cartsService.getCartById(cid);
-            if (!checkCart) {
-                return res.json({
+            if (checkCart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(checkCart),
                     message: "Cart not found",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             const cart = await this.cartsService.deleteProductsCart(cid);
             return res.json({
                 message: "Cart products deleted successfully",
@@ -104,11 +124,14 @@ export default class CartsController {
         try {
             const { cid } = req.params;
             const cart = await this.cartsService.getCartById(cid);
-            if (!cart) {
-                return res.json({
+            if (cart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(cart),
                     message: "Cart does not exist",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             const deleteCart = await this.cartsService.deleteCartById(cid);
             return res.json({message: "Cart delete successfully", deleteCart});
         } catch (error) {
@@ -120,16 +143,22 @@ export default class CartsController {
             const { cid, pid } = req.params;
             const { quantity } = req.body;
             const checkCart = await this.cartsService.getCartById(cid);
-            if (!checkCart) {
-                return res.json({
+            if (checkCart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(checkCart),
                     message: "Cart not found",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             const checkProduct = await this.productsService.getProductById(pid);
-            if (!checkProduct) {
-                return res.json({
+            if (checkProduct.name == "CastError") {
+                CustomError.createError({
+                    name: "get product by id error",
+                    cause: generateGetProductInfoError(checkProduct),
                     message: "Product not found",
-                })
+                    code: EnumsErrors.PRODUCT_MISSING_ERROR
+                });
             };
             const updateProduct = await this.cartsService.updateProductCart(cid, pid, quantity);
             return res.json({
@@ -147,11 +176,14 @@ export default class CartsController {
             let total = 0;
             let order;
             const checkCart = await this.cartsService.getCartById(cid);
-            if (!checkCart) {
-                return res.json({
+            if (checkCart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(checkCart),
                     message: "Cart not found",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             const result = await this.cartsService.purchaseCart(cid);
             for (let obj in result) {
                 let objectId = String(result[obj].id);
@@ -173,7 +205,7 @@ export default class CartsController {
             const updateCartProducts = await this.cartsService.getCartById(cid);
             const cartProducts = updateCartProducts.products;
             const Ticketcreate = await this.ticketService.createTicket(order);
-            const sendEmail = transporter.sendMail({
+            transporter.sendMail({
                 from: EMAIL,
                 to: user.user.email,
                 subject: `Purchase ticket ecommerce`,

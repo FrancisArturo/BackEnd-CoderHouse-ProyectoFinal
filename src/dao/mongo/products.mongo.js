@@ -1,6 +1,7 @@
 import { productsModel } from '../../models/products.models.js';
 import products from '../../files/products.js';
 
+
 export default class ProductsDao {
     insertionProductsDao = async () => {
         try {
@@ -15,27 +16,27 @@ export default class ProductsDao {
             const result = await productsModel.find();
             return result;
         } catch (error) {
-            throw new Error("No products found");
+            return error;
         }
     }       
     getallProductsDao = async (limit, page, category, sort) => {
         try {
             if (category === "all") {
                 const products = await productsModel.paginate({}, { limit, page, lean : true, sort: sort && { price: sort } });
-                if (products.length === 0) {
-                    return ("No products found");
-                }
+                // if (products.length === 0) {
+                //     return ("No products found");
+                // }
                 return products;
             }
             else {
                 const products = await productsModel.paginate({category : category}, { limit, page, lean : true, sort: sort && { price: sort } })
-                if (products.length === 0) {
-                    return ("No products found");
-                }
+                // if (products.length === 0) {
+                //     return ("No products found");
+                // }
                 return products;
             }
         } catch (error) {
-            throw new Error("Error getting products");
+            return error;
         }
     }
     getProductByIdDao = async (pid) => {
@@ -43,7 +44,12 @@ export default class ProductsDao {
             const product = await productsModel.findById({_id: pid});
             return product;
         } catch (error) {
-            throw new Error("Error getting product"); 
+            return error;
+            // throw CustomError.createError({
+            //     name: "get product by id error",
+            //     message: "error product not found",
+            //     code: EnumsErrors.PRODUCT_MISSING_ERROR
+            // });
         }
     }
     getProductByTitleDao = async (product) => {
@@ -52,7 +58,7 @@ export default class ProductsDao {
             const checkProduct = await productsModel.findOne({ title: titleToSearch });
             return checkProduct;
         } catch (error) {
-            throw new Error(error); 
+            return error; 
         }
     }
     addProductDao = async (product) => {
@@ -70,7 +76,7 @@ export default class ProductsDao {
             const prodUpdated =  await productsModel.findById({_id: pid});
             return prodUpdated;
         } catch (error) {
-            throw new Error("Error updating product");
+            return error;
         }
     }
     deleteProductDao = async (pid) => {

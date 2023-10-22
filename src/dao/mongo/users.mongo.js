@@ -100,7 +100,7 @@ export default class UsersDao {
             const userFound = await userModel.findOne({ _id: uid });
             return userFound;
         } catch (error) {
-            throw new Error(error);
+            return error;
         }
     }
     deleteUserByIdDao = async (uid) => {

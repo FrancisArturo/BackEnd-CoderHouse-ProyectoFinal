@@ -24,6 +24,6 @@ recoverBtn.addEventListener("click", async(e) => {
         alert("An email was sent, check it to continue with the process");
         return window.location.replace("/login");
     } else {
-        return alert("User not found")
+        return alert("User not found");
     }
 })

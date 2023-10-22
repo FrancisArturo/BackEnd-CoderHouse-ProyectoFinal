@@ -1,6 +1,9 @@
 import { EMAIL } from '../config/config.js';
 import { ProductsService } from '../repositories/index.js';
 import { transporter } from '../utils/transporter.js';
+import CustomError from "../utils/error-handler.js";
+import EnumsErrors from "../utils/error-enums.js";
+import { GetProductsInfoError, generateGetProductInfoError, productExistsInfoError } from '../utils/error-info.js';
 
 
 export default class ProductsController {
@@ -22,10 +25,18 @@ export default class ProductsController {
     getallController = async (req, res) => {
         try {
             const products = await this.productsService.getall();
+            if (products.length == 0) {
+                CustomError.createError({
+                    name: "get all products error",
+                    cause: GetProductsInfoError(),
+                    message: "products not found",
+                    code: EnumsErrors.PRODUCT_MISSING_ERROR
+                });
+            } 
             return res.json({
                 message: "Products retrieved successfully",
                 data: products
-            })
+            });
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -34,10 +45,13 @@ export default class ProductsController {
         try {
             const { pid } = req.params;
             const product = await this.productsService.getProductById(pid);
-            if (!product) {
-                return res.json({
-                    message: "No product found",
-                })
+            if (product.name == "CastError") {
+                CustomError.createError({
+                    name: "get product by id error",
+                    cause: generateGetProductInfoError(product),
+                    message: "product not found",
+                    code: EnumsErrors.PRODUCT_MISSING_ERROR
+                });
             }
             return res.json({
                 message: "Product retrieved successfully",
@@ -52,9 +66,12 @@ export default class ProductsController {
             const { body } = req;
             const checkProduct = await this.productsService.getProductByTitle(body);
             if (checkProduct) {
-                return res.json({
+                CustomError.createError({
+                    name: "add product error",
+                    cause: productExistsInfoError(checkProduct),
                     message: "Product already exists",
-                })
+                    code: EnumsErrors.PRODUCT_EXIST_ERROR
+                });
             };
             const addProduct = await this.productsService.addProduct(body);
             return res.json({
@@ -69,11 +86,14 @@ export default class ProductsController {
         try {
             const { pid } = req.params;
             const productFind = await this.productsService.getProductById(pid);
-            if (!productFind) {
-                return res.json({
-                    message: "No product found",
-                })
-            };
+            if (productFind.name == "CastError") {
+                CustomError.createError({
+                    name: "get product by id error",
+                    cause: generateGetProductInfoError(productFind),
+                    message: "product not found",
+                    code: EnumsErrors.PRODUCT_MISSING_ERROR
+                });
+            }
             const product = req.body;
             const updateProduct = await this.productsService.updateProduct(pid, product);
             return res.json({
@@ -88,11 +108,14 @@ export default class ProductsController {
         try {
             const { pid } = req.params;
             const productFind = await this.productsService.getProductById(pid);
-            if (productFind == "No product found") {
-                return res.json({
-                    message: "No product found",
-                })
-            };
+            if (productFind.name == "CastError") {
+                CustomError.createError({
+                    name: "get product by id error",
+                    cause: generateGetProductInfoError(productFind),
+                    message: "product not found",
+                    code: EnumsErrors.PRODUCT_MISSING_ERROR
+                });
+            }
             const productDelete = await this.productsService.deleteProduct(pid);
             if (productFind.owner != "admin") {
                 transporter.sendMail({

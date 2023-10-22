@@ -10,19 +10,19 @@ function handlePolicies(policies) {
                 return next(err);
             }
             if (!userJWT && policies.includes("pswRecover")) {
-                return next()
+                return next();
             }
             if (!userJWT && policies.includes("public")) {
-                return next()
+                return next();
             }
             if (!userJWT) {
                 return res.status(401).send({message: "denied access, invalid token"});
             }
             if (policies.includes(userJWT.user.role)) {
                 req.user = userJWT;
-                return next()
+                return next();
             } else {
-                return res.status(403).send({message: "Unauthorized access"})
+                return res.status(403).send({message: "Unauthorized access"});
             }
 
         })(req, res, next);

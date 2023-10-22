@@ -1,6 +1,9 @@
 import { ADMIN_EMAIL, ADMIN_PASSWORD, EMAIL } from "../config/config.js";
 import UserDTO from "../dao/DTOs/user.dto.js";
 import { CartsService, UsersService } from "../repositories/index.js";
+import EnumsErrors from "../utils/error-enums.js";
+import CustomError from "../utils/error-handler.js";
+import { GetUsersInfoError, getUserEmailInfoError, getUserIdInfoError, pswExistsInfoError, uploadInfoError, userExistsInfoError } from "../utils/error-info.js";
 import {generateJWT} from "../utils/jwt.js";
 import { transporter } from "../utils/transporter.js";
 
@@ -17,7 +20,12 @@ export default class SessionController {
             let docUploaded = false;
             const { uid } = req.params;
             if(!req.files) {
-                return res.status(400).send({status: "error", message: "upload error"})
+                CustomError.createError({
+                    name: "uploading docs error",
+                    cause: uploadInfoError(),
+                    message: "upload error",
+                    code: EnumsErrors.UPLOAD_MISSING_ERROR
+                });
             }
             for (let index = 0; index < req.files.length; index++) {
                 const element = req.files[index];
@@ -63,8 +71,13 @@ export default class SessionController {
         try {
             const userExist = await this.usersService.getUserByEmail(req.body);
             if (userExist) {
-                return res.status(400).json({message: "User already exists"});
-            }
+                CustomError.createError({
+                    name: "create user error",
+                    cause: userExistsInfoError(userExist),
+                    message: "User already exists",
+                    code: EnumsErrors.USER_EXIST_ERROR
+                });
+            };
             const newUser = await this.usersService.createUser(req.body);
             const cartUser = await this.cartsService.addCart();
             const cartUserId = cartUser._id;
@@ -80,7 +93,12 @@ export default class SessionController {
             const usersReturn = [];
             const users = await this.usersService.getUsers();
             if (!users) {
-                return res.status(404).json({error: "No users found"});
+                CustomError.createError({
+                    name: "get users error",
+                    cause: GetUsersInfoError(),
+                    message: "No users found",
+                    code: EnumsErrors.USER_MISSING_ERROR
+                });
             }
             users.forEach(element => {
                 const user = new UserDTO(element);
@@ -109,7 +127,7 @@ export default class SessionController {
             }
             const userExist = await this.usersService.getUserByEmail(userSubmitted);
             if (!userExist) {
-                return res.status(400).render('login', {error: "User not found"});
+                return res.status(404).render('login', {error: "User not found"});
             }
             const pswControl = await this.usersService.comparePsw(userSubmitted);
             if (!pswControl) {
@@ -139,7 +157,7 @@ export default class SessionController {
             res.clearCookie("cookieToken");
             return res.redirect('/login');
         } catch (error) {
-            return console.log(error);
+            return res.status(400).json({ message: error.message});
         }
     }
     getUserByIdController = async (req, res) => {
@@ -148,15 +166,19 @@ export default class SessionController {
             const cart = await this.usersService.getUserById(userId.user.user);
             return res.send(cart);
         } catch (error) {
-            return console.log(error);
+            return res.status(400).json({ message: error.message});
         }
     }
-
     recoverPasswordController = async (req, res) => {
         try {
             const userExist = await this.usersService.getUserByEmail(req.body);
             if (!userExist) {
-                return res.status(400).json({ message: "User not found" });
+                CustomError.createError({
+                    name: "getting user error",
+                    cause: getUserEmailInfoError(req.body.email),
+                    message: "User not found",
+                    code: EnumsErrors.USER_MISSING_ERROR
+                });
             }
             const signUser = {
                 email: userExist.email,
@@ -201,7 +223,12 @@ export default class SessionController {
             }
             const pswControl = await this.usersService.comparePsw(user);
             if (pswControl) {
-                return res.status(400).json({ message: "the password must be different from the previous one" });
+                CustomError.createError({
+                    name: "psw create error",
+                    cause: pswExistsInfoError(),
+                    message: "the password must be different from the previous one",
+                    code: EnumsErrors.PSW_EXISTS_ERROR
+                });
             }
             const updatePsw = await this.usersService.recoverCompletePsw(user);
             const currentUser = new UserDTO(updatePsw);
@@ -215,8 +242,13 @@ export default class SessionController {
         try {
             const { uid } = req.params;
             const user = await this.usersService.getUserById(uid);
-            if (!user) {
-                return res.json({ message: "user not found" });
+            if (user.name == "CastError") {
+                CustomError.createError({
+                    name: "get user by id error",
+                    cause: getUserIdInfoError(user),
+                    message: "user not found",
+                    code: EnumsErrors.USER_MISSING_ERROR
+                });
             }
             if (user.role == "user") {
                 await this.usersService.updateUserById(uid, { role: "premium" });
@@ -261,8 +293,13 @@ export default class SessionController {
         try {
             const { uid } = req.params;
             const user = await this.usersService.getUserById(uid);
-            if (!user) {
-                return res.json({ message: "user not found" });
+            if (user.name == "CastError") {
+                CustomError.createError({
+                    name: "get user by id error",
+                    cause: getUserIdInfoError(user),
+                    message: "user not found",
+                    code: EnumsErrors.USER_MISSING_ERROR
+                });
             }
             if (user.role == "user") {
                 await this.usersService.updateUserById(uid, { role: "premium" });
@@ -297,8 +334,13 @@ export default class SessionController {
         try {
             const { uid } = req.params;
             const user = await this.usersService.getUserById(uid);
-            if (!user) {
-                return res.json({ message: "user not found" });
+            if (user.name == "CastError") {
+                CustomError.createError({
+                    name: "get user by id error",
+                    cause: getUserIdInfoError(user),
+                    message: "user not found",
+                    code: EnumsErrors.USER_MISSING_ERROR
+                });
             }
             await this.cartsService.deleteCartById(user.carts);
             const deleteUser = await this.usersService.deleteUserById(uid);

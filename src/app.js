@@ -11,6 +11,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
 import { swaggerOpt } from "./config/swagger.config.js";
 import { getLogger, setLogger } from "./utils/logger.js";
+import { ErrorHandler } from "./middleware/errors/index.js";
 
 
 
@@ -54,6 +55,7 @@ export default class App {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.static(__dirname + "/public"));
+        this.app.use(ErrorHandler);
         this.app.use(setLogger);
         this.app.use(cookieParser());
         initializePassport();

@@ -66,8 +66,8 @@ updateBtn.addEventListener("click", async (e) => {
     const data = await updateProduct(pid, productUpdate);
     if (data.message == "Product updated successfully") {
         alert("Product updated successfully");
-    } else if (data.message == "No product found") {
-        alert("No product found");
+    } else if (data.message == "product not found") {
+        alert("product not found");
     } else {
         alert("Update Product Error");
     }

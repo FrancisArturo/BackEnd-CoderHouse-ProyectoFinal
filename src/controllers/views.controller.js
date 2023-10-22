@@ -1,5 +1,8 @@
 import UserDTO from '../dao/DTOs/user.dto.js';
 import { CartsService, ProductsService, UsersService } from '../repositories/index.js';
+import EnumsErrors from '../utils/error-enums.js';
+import CustomError from '../utils/error-handler.js';
+import { getCartInfoError } from '../utils/error-info.js';
 
 export default class ViewsController {
     productsService;
@@ -37,7 +40,7 @@ export default class ViewsController {
         const usersReturn = [];
             const users = await this.usersService.getUsers();
             if (!users) {
-                return res.status(404).json({error: "No users found"});
+                return res.render("users", {users});
             }
             users.forEach(element => {
                 const user = new UserDTO(element);
@@ -122,11 +125,14 @@ export default class ViewsController {
         try {
             const { cid } = req.params;
             const checkCart = await this.cartsService.getCartById(cid);
-            if (!checkCart) {
-                return res.json({
+            if (checkCart.name == "CastError") {
+                CustomError.createError({
+                    name: "get all products in cart error",
+                    cause: getCartInfoError(checkCart),
                     message: "Cart not found",
-                })
-            };
+                    code: EnumsErrors.CART_MISSING_ERROR
+                });
+            }
             const cartProducts = checkCart.products;
             res.render("cart", { cartProducts, cid });
         } catch (error) {

@@ -27,6 +27,9 @@
     <br>
     <br>
 {{/each }}
+{{#unless users}}
+    <p>No users in DB</p>
+{{/unless}}
 
 <script src="/js/userchangerole.js"></script>
 <script src="/js/deleteuser.js"></script>

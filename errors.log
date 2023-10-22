@@ -1,2 +1,8 @@
 [LOGGER] 23-10-21 20:22:16  fatal : !Alert!
 [LOGGER] 23-10-21 20:22:16  error : !Alert!
+[LOGGER] 23-10-22 16:03:37  error : undefined
+[LOGGER] 23-10-22 16:05:41  error : undefined
+[LOGGER] 23-10-22 16:06:20  error : Error getting all products from DB
+[LOGGER] 23-10-22 19:10:48  error : Error getting all products from DB
+[LOGGER] 23-10-22 19:13:04  error : undefined
+[LOGGER] 23-10-22 19:13:26  error : undefined
