@@ -7,7 +7,7 @@ export const swaggerOpt = {
             title: "documentacion api ecommerce",
             description: "API ecommerce",
             version: "1.0.0"
-        }
+        },
     },
     apis:[`${__dirname}/docs/**/*.yml`]
 }

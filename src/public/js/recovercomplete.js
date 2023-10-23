@@ -5,7 +5,7 @@ const recoverBtn = document.getElementById("btnRecoverPsw");
 
 async function recoverCompletePassword(psw) {
     const res = await fetch(`/api/v1/session/recover/complete`, {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify(psw),
         headers: {
             "Content-Type": "application/json",

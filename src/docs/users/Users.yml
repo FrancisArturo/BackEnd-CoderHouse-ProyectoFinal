@@ -19,7 +19,112 @@ paths:
                 $ref: "#components/schemas/User"
         "500":
           description: error server side
-
+  /api/v1/session/login:
+    post:
+      summary: login with user email and password
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/login"
+      responses:
+        "200":
+          description: Home page
+        "404":
+          description: User not found or incorrect password
+  /api/v1/session/users/{uid}/premium:
+    get:
+      summary: change the role of user, if is "user" to "premium" and and the opposite way
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id of the user
+          schema:
+            $type: ObjectId
+      responses:
+        "200":
+          description: Home page with the role of the user changed
+        "404":
+          description: user not found
+  /api/v1/session/current:
+    get:
+      summary: get the info DTO of the current user
+      tags:
+        - Users
+      responses:
+        "200":
+          description: a message "Current access information" and the info of the current user
+        "400":
+          description: unauthorized access
+  /api/v1/session/logout:
+    get:
+      summary: logout of the user
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Login page
+        "404":
+          description: user not found
+  /api/v1/session/users:
+    get:
+      summary: get the users from DB
+      tags:
+        - Admin
+      responses:
+        "200":
+          description: a users list
+        "404":
+          description: users not found
+    delete:
+      summary: delete inactive users from DB, 30 min of inactivity
+      tags:
+        - Admin
+      responses:
+        "200":
+          description: a message "Inactive users deleted" or a message "No inactive users" 
+        "404":
+          description: users not found
+  /api/v1/session/users/{uid}/role:
+    put:
+      summary: change the role of the user, "user" or "premium"
+      tags:
+        - Admin
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id of the user
+          schema: 
+            $type: ObjectId
+      responses:
+        "200":
+          description: a message "Role change successfully"
+        "404":
+          description: user not found
+  /api/v1/session/users/{uid}:
+    delete:
+      summary: delete user from DB by ID
+      tags:
+        - Admin
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id of the user
+          schema:
+            $type: ObjectId
+      responses:
+        "200":
+          description: a message "User delete successfully"  
+        "404":
+          description: user not found
 components:
   schemas:
     User:
@@ -86,6 +191,18 @@ components:
         email: jdoe@gmail.com
         phone: 112346456
         age: 22
+        password: qwerty
+    login:
+      type: object
+      properties:
+        email:
+          type: string
+          description: email of the user
+        password:
+          type: string
+          description: password of the user
+      example:
+        email: jdoe@gmail.com
         password: qwerty
 
     

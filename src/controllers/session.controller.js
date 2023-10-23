@@ -199,7 +199,7 @@ export default class SessionController {
                         <a href="http://localhost:8000/recover/${token}">CLICK HERE</a>
                         <br>
                         <br>
-                        <p>This link has a duration of 30 min, After this you will have to request a new link</p>
+                        <p>This link has a duration of 60 min, After this you will have to request a new link</p>
                     </div>
                 </div>
                 `,
@@ -343,8 +343,8 @@ export default class SessionController {
                 });
             }
             await this.cartsService.deleteCartById(user.carts);
-            const deleteUser = await this.usersService.deleteUserById(uid);
-            return res.json({message: "User delete successfully", deleteUser});
+            await this.usersService.deleteUserById(uid);
+            return res.json({message: "User delete successfully"});
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
