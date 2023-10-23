@@ -4,7 +4,7 @@ import EnumsErrors from "../utils/error-enums.js";
 import CustomError from "../utils/error-handler.js";
 import { generateGetProductInfoError, getCartInfoError } from "../utils/error-info.js";
 import { transporter } from "../utils/transporter.js";
-//import { client } from "../utils/twilioClient.js";
+import { client } from "../utils/twilioClient.js";
 
 
 export default class CartsController {
@@ -132,8 +132,8 @@ export default class CartsController {
                     code: EnumsErrors.CART_MISSING_ERROR
                 });
             }
-            const deleteCart = await this.cartsService.deleteCartById(cid);
-            return res.json({message: "Cart delete successfully", deleteCart});
+            await this.cartsService.deleteCartById(cid);
+            return res.json({message: "Cart delete successfully"});
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -171,6 +171,7 @@ export default class CartsController {
     }
     purchaseCartController = async (req, res) => {
         try {
+            const productsInTicket = [];
             const { cid } = req.params;
             const user = req.user;
             let total = 0;
@@ -188,10 +189,12 @@ export default class CartsController {
             for (let obj in result) {
                 let objectId = String(result[obj].id);
                 let objectIdMatch = objectId.match(/[0-9a-f]{24}/i);
-                let productId = objectIdMatch[0]
+                let productId = objectIdMatch[0];
+                productsInTicket.push({title: result[obj].title, quantity: result[obj].quantity, price: result[obj].price});
                 await this.cartsService.deleteProductCart(cid, productId);
                 total += result[obj].price;
             };
+
             if (total === 0) {
                 const cartProducts = checkCart.products;
                 return res.render('ticket', {cartProducts});
@@ -199,6 +202,7 @@ export default class CartsController {
             order = {
                 code:  Math.floor(Math.random() * (1000000000 - 10000000 + 1) + 10000000),
                 purchase_datetime: Date.now(),
+                products: productsInTicket,
                 amount: total,
                 purchaser: user.user.email,
             };
@@ -211,23 +215,23 @@ export default class CartsController {
                 subject: `Purchase ticket ecommerce`,
                 html: `
                 <div>
-                    <h2>Ticket N°: ${Ticketcreate.code}</h2>
+                    <h3>Ticket N°: ${Ticketcreate.code}</h3>
                     <div>
-                        <p>purchase_datetime: ${Ticketcreate.purchase_datetime}</p>
-                        <p>amount: $ ${Ticketcreate.amount}</p>
-                        <p>purchaser: ${Ticketcreate.purchaser}</p>
+                        <p>Purchase_datetime: ${Ticketcreate.purchase_datetime}</p>
+                        <p>Amount: $ ${Ticketcreate.amount}</p>
+                        <p>Purchaser: ${Ticketcreate.purchaser}</p>
                     </div>
                 </div>
                 `,
             });
-            // const userFound = await this.usersService.getUserById(user.user.user);
-            // if (userFound.phone) {
-            //     const sendSms = await client.messages.create({
-            //     body: `Thanks for your Purchase ${user.user.firstName} ${user.user.lastName}, your ticket N° is: ${Ticketcreate.code}`,
-            //     from: PHONE,
-            //     to: `+${userFound.phone}`,
-            //     })
-            // };
+            const userFound = await this.usersService.getUserById(user.user.user);
+            if (userFound.phone) {
+                client.messages.create({
+                body: `Thanks for your Purchase ${user.user.firstName} ${user.user.lastName}, your ticket N° is: ${Ticketcreate.code}`,
+                from: PHONE,
+                to: `+${userFound.phone}`,
+                })
+            };
             return res.render('ticket', {Ticketcreate, cartProducts});
         } catch (error) {
             res.status(400).json({ message: error.message });

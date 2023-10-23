@@ -55,22 +55,6 @@ paths:
                   $ref: "#components/schemas/Product" 
         "500": 
           description: error server side
-    delete:
-      summary: Delete a product by ID
-      tags:
-        - Products
-      parameters:
-        - name: pid
-          in: path
-          required: true
-          description: ID of a product from DB
-          schema:
-            $type: ObjectId
-      responses:
-        "200":
-          description: return a message "Product deleted successfully" and an array of products in DB
-        "400":
-          description: error server side
     put:
       summary: Update a product by ID
       tags:
@@ -92,6 +76,22 @@ paths:
       responses:
         "200":
           description: return a message "Product updated successfully" and the product updated
+        "400":
+          description: error server side
+    delete:
+      summary: Delete a product by ID
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID of a product from DB
+          schema:
+            $type: ObjectId
+      responses:
+        "200":
+          description: return a message "Product deleted successfully" and an array of products in DB
         "400":
           description: error server side
 components:

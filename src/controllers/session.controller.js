@@ -1,6 +1,6 @@
 import { ADMIN_EMAIL, ADMIN_PASSWORD, EMAIL } from "../config/config.js";
 import UserDTO from "../dao/DTOs/user.dto.js";
-import { CartsService, UsersService } from "../repositories/index.js";
+import { CartsService, TicketsService, UsersService } from "../repositories/index.js";
 import EnumsErrors from "../utils/error-enums.js";
 import CustomError from "../utils/error-handler.js";
 import { GetUsersInfoError, getUserEmailInfoError, getUserIdInfoError, pswExistsInfoError, uploadInfoError, userExistsInfoError } from "../utils/error-info.js";
@@ -11,9 +11,11 @@ import { transporter } from "../utils/transporter.js";
 export default class SessionController {
     usersService;
     CartsService;
+    ticketsService;
     constructor() {
         this.usersService = UsersService; 
         this.cartsService = CartsService;
+        this.ticketsService = TicketsService;
     }
     uploadDocumentController = async (req, res) => {
         try {
@@ -395,6 +397,15 @@ export default class SessionController {
                     maxAge:60*60*1000,
                     httpOnly: true
                 }).redirect('/home');
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    }
+    getOrdersByEmailController = async (req, res) => {
+        try {
+            const { user } = req.user;
+            const searchOrders = await this.ticketsService.getOrdersByEmail(user.email);
+            return res.render("myorders", {searchOrders});
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }

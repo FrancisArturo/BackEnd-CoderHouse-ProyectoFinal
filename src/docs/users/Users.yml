@@ -79,7 +79,7 @@ paths:
         - Admin
       responses:
         "200":
-          description: a users list
+          description: a users list on "users" page
         "404":
           description: users not found
     delete:

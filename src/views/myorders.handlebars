@@ -1,0 +1,26 @@
+<div>
+    <h1>My orders</h1>
+    <br>
+    <button><a href="/home">Home</a></button>
+    <br>
+    <br>
+    <button type="button"><a href="/profile">Profile</a></button>
+    <br>
+    <br>
+    {{#if searchOrders}}
+        {{#each searchOrders}}
+        <h2>Ticket N°: {{this.code}} </h2>
+        <h4>Purchase_datetime: {{this.purchase_datetime}}</h4>
+        <h4>Products: 
+            {{#each this.products}}
+                <p>Title: {{this.title}}, Price: {{this.price}}, Quantity: {{this.quantity}}</p>
+            {{/each }}
+        </h4>
+        <h4>Amount: {{this.amount}}</h4>
+        <br>
+        {{/each }}
+    {{/if}}
+    {{#unless searchOrders}}
+    <h3>No orders found</h3>
+    {{/unless}}
+</div>

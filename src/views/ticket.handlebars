@@ -7,25 +7,27 @@
         <h1>Purchase successful!</h1>
         <h2>Ticket N°: {{Ticketcreate.code}} </h2>
         <div>
-            <p>purchase_datetime: {{Ticketcreate.purchase_datetime}}</p>
-            <p>amount: {{Ticketcreate.amount}}</p>
-            <p>purchaser: {{Ticketcreate.purchaser}}</p>
+            <h4>Purchase_datetime: {{Ticketcreate.purchase_datetime}}</h4>
+            <h4>Products:</h4>
+            {{#each Ticketcreate.products}}
+                <p>Title: {{this.title}}, Price: {{this.price}}, Quantity: {{this.quantity}}</p>
+                <br>
+            {{/each }}
+            <h4>Amount: {{Ticketcreate.amount}}</h4>
+            <h4>Purchaser: {{Ticketcreate.purchaser}}</h4>
         </div>
         <br>
-        <br>
-        <br>
+
     {{/if}}
     {{#if cartProducts}}
         <h3>Products whithout stock (still in your cart)</h3>
         {{#each cartProducts}}
             <div>
                 <h4>{{this.product.title}}</h4>
-                <p>description: {{this.product.description}}</p>
                 <p>price: {{this.product.price}}</p>
-                <p>category: {{this.product.category}}</p>
                 <p>quantity: {{this.quantity}} </p>
-                <p>id: {{this.product.id}}</p>
             </div>
+            <br>
         {{/each }} 
     {{/if}}
     <br>

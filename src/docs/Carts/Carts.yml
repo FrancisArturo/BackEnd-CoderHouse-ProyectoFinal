@@ -22,6 +22,7 @@ paths:
                   $ref: "#components/schemas/CartProduct"
         "400":
           description: error server side
+  /api/v1/carts/{cid}/products:
     delete:
       summary: Delete all products in cart
       tags:

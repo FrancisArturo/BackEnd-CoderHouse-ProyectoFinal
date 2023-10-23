@@ -32,6 +32,7 @@ export default class sessionRoutes {
         this.router.get(`${this.path}/github`, passport.authenticate("github", { scope: [ 'user:email' ], session: false}));
         this.router.get(`${this.path}/github/callback`, passport.authenticate("github", { failureRedirect: "/api/v1/session/failedlogin", session: false }), this.sessionController.githubLoginController);
         this.router.get(`${this.path}/current`,  handlePolicies(["admin", "user", "premium"]), this.sessionController.currentController);
+        this.router.get(`${this.path}/users/orders`,  handlePolicies(["user", "premium"]), this.sessionController.getOrdersByEmailController);
     }
 }
 

@@ -108,10 +108,11 @@ export default class CartsDao {
                 if (productInList.stock >= cart.products[obj].quantity) {
                     productPrice = cart.products[obj].quantity * productInList.price;
                     let product = {
-                        id: cart.products[obj].product,
+                        id: productInList._id,
+                        title: productInList.title,
                         quantity: cart.products[obj].quantity,
                         price: productPrice
-                    };
+                    }
                     productsOrder.push(product);
                     await productsModel.updateOne({ _id: cart.products[obj].product }, {stock: productInList.stock - cart.products[obj].quantity});
                 };
