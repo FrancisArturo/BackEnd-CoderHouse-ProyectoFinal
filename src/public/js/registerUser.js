@@ -18,7 +18,7 @@ async function clearValues() {
 
 async function registerUser(newUser) {
     const res = await fetch("/api/v1/session/register", {
-        method: "POSt",
+        method: "POST",
         body: JSON.stringify(newUser),
         headers: {
             "Content-Type": "application/json",
